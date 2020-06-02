@@ -10,19 +10,20 @@ import requests
 warnings.filterwarnings('ignore')
 
 
-idrac_username = 'root'
-idrac_password = 'rds123RDS'
+username = None
+password = None
 
 
 def get_current_power_state(ip):
     url = f'https://{ip}/redfish/v1/Systems/System.Embedded.1/'
     try:
-        response = requests.get(url, verify=False, auth=(idrac_username, idrac_password))
+        response = requests.get(url, verify=False, auth=(username, password))
         data = response.json()
 
         with open('inventory.txt', 'a') as f:
             f.write(f'iDRAC IP: {ip}\n')
             f.write(f'HostName: {data["HostName"]}\n')
+            f.write(f'CPU: {data["ProcessorSummary"]["Model"]}\n')
             f.write(f'MemorySummary: {data["MemorySummary"]["TotalSystemMemoryGiB"]} GB\n')
             f.write(f'Model: {data["Model"]}\n')
             f.write(f'PartNumber: {data["PartNumber"]}\n')
@@ -33,7 +34,7 @@ def get_current_power_state(ip):
         # print(data)
         print(f'iDRAC IP: {ip}')
         print(f'HostName: {data["HostName"]}')
-        print(f'Manufacturer: {data["Manufacturer"]}')
+        print(f'CPU: {data["ProcessorSummary"]["Model"]}')
         print(f'MemorySummary: {data["MemorySummary"]["TotalSystemMemoryGiB"]} GB')
         print(f'Model: {data["Model"]}')
         print(f'PartNumber: {data["PartNumber"]}')
